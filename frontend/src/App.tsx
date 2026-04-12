@@ -220,7 +220,7 @@ export default function App() {
       let feedbackData = [];
       if (adminToken) {
         try {
-          const feedbackResponse = await fetch('http://localhost:5000/api/v1/feedback/all', {
+          const feedbackResponse = await fetch('https://truthlens-backend-b4xl.onrender.com/api/v1/feedback/all', {
             method: 'GET',
             headers: {
               'Authorization': `Bearer ${adminToken}`,
@@ -390,7 +390,7 @@ export default function App() {
 
   const adminLogin = async (email: string, password: string) => {
     try {
-      const response = await fetch('http://localhost:5000/api/v1/admin/login', {
+      const response = await fetch('https://truthlens-backend-b4xl.onrender.com/api/v1/admin/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -443,7 +443,7 @@ export default function App() {
 
   const initializeAdmin = async () => {
     try {
-      const response = await fetch('http://localhost:5001/admin/init-admin', {
+      const response = await fetch('https://truthlens-backend-b4xl.onrender.com/admin/init-admin', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -498,7 +498,7 @@ export default function App() {
     try {
       const payload = type === 'url' ? { url: content } : { text: content };
       
-      const response = await fetch('http://localhost:5000/api/v1/ml/predict', {
+      const response = await fetch('https://truthlens-backend-b4xl.onrender.com/api/v1/ml/predict', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -637,7 +637,7 @@ export default function App() {
       const formData = new FormData();
       formData.append('files', file);
 
-      const response = await fetch('http://localhost:5000/api/v1/ml/train', {
+      const response = await fetch('https://truthlens-backend-b4xl.onrender.com/api/v1/ml/train', {
         method: 'POST',
         body: formData,
       });

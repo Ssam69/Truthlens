@@ -62,7 +62,7 @@ export default function FeedbackPage({ navigateTo }: FeedbackPageProps) {
     try {
       const fullMessage = `Rating: ${formData.rating || 'Not provided'}\nExperience: ${formData.experience || 'Not provided'}\nFeedback: ${formData.feedback}\nLiked Features: ${formData.features.length > 0 ? formData.features.join(', ') : 'None selected'}\nImprovements: ${formData.improvements || 'None'}\nWould Recommend: ${formData.recommend || 'Not specified'}`;
 
-      const response = await fetch('http://localhost:5001/feedback', {
+      const response = await fetch('https://truthlens-backend-b4xl.onrender.com/feedback', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
