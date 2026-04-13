@@ -131,9 +131,9 @@ class SupabaseService:
             return False
         try:
             expires_at = (datetime.now(timezone.utc) + timedelta(minutes=10)).isoformat()
-            self.service_client.table("pending_otps").upsert({
+            self.service_client.table("otp_verifications").upsert({
                 "email": email,
-                "otp": otp,
+                "otp_code": otp,
                 "expires_at": expires_at,
                 "metadata": metadata
             }).execute()
@@ -147,22 +147,22 @@ class SupabaseService:
         if not self.service_client:
             return None
         try:
-            res = self.service_client.table("pending_otps").select("*").eq("email", email).execute()
+            res = self.service_client.table("otp_verifications").select("*").eq("email", email).execute()
             if not res.data:
                 return None
             
             data = res.data[0]
-            if data['otp'] != otp:
+            if data['otp_code'] != otp:
                 return None
             
             expires_at = datetime.fromisoformat(data['expires_at'].replace('Z', '+00:00'))
             if expires_at < datetime.now(timezone.utc):
                 # Delete expired OTP
-                self.service_client.table("pending_otps").delete().eq("email", email).execute()
+                self.service_client.table("otp_verifications").delete().eq("email", email).execute()
                 return None
             
             # Valid OTP, delete it and return metadata
-            self.service_client.table("pending_otps").delete().eq("email", email).execute()
+            self.service_client.table("otp_verifications").delete().eq("email", email).execute()
             return data['metadata']
         except Exception as e:
             print(f"Verify OTP error: {e}")
@@ -187,7 +187,7 @@ class SupabaseService:
                 self.service_client.table("profiles").upsert({
                     "id": user_id,
                     "email": email,
-                    "name": name,
+                    "full_name": name,
                     "is_admin": False
                 }).execute()
                 

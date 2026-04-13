@@ -109,7 +109,7 @@ async def signup_resend(email: str):
     """
     # Check if we have an existing record for this email
     try:
-        res = supabase_service.service_client.table("pending_otps").select("metadata").eq("email", email).execute()
+        res = supabase_service.service_client.table("otp_verifications").select("metadata").eq("email", email).execute()
         if not res.data:
             raise HTTPException(status_code=400, detail="No pending signup found for this email.")
         
