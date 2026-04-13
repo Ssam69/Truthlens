@@ -1,6 +1,7 @@
 import os
 from supabase import create_client, Client
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, List
+from datetime import datetime, timedelta, timezone
 from ..core.config import settings
 
 class SupabaseService:
@@ -111,7 +112,6 @@ class SupabaseService:
                 return True
             
             # Fallback for checking email against ADMIN_EMAIL
-            # We use service_client for auth.admin if available, otherwise we can't check auth.users directly
             if self.service_client:
                 try:
                     res_user = self.service_client.auth.admin.get_user_by_id(user_id)
@@ -124,5 +124,78 @@ class SupabaseService:
         except Exception as e:
             print(f"Admin check error: {e}")
             return False
+
+    async def store_otp(self, email: str, otp: str, metadata: Dict[str, Any]):
+        """Store OTP in the database."""
+        if not self.service_client:
+            return False
+        try:
+            expires_at = (datetime.now(timezone.utc) + timedelta(minutes=10)).isoformat()
+            self.service_client.table("pending_otps").upsert({
+                "email": email,
+                "otp": otp,
+                "expires_at": expires_at,
+                "metadata": metadata
+            }).execute()
+            return True
+        except Exception as e:
+            print(f"Store OTP error: {e}")
+            return False
+
+    async def verify_and_consume_otp(self, email: str, otp: str) -> Optional[Dict[str, Any]]:
+        """Verify OTP and return metadata if valid, then delete it."""
+        if not self.service_client:
+            return None
+        try:
+            res = self.service_client.table("pending_otps").select("*").eq("email", email).execute()
+            if not res.data:
+                return None
+            
+            data = res.data[0]
+            if data['otp'] != otp:
+                return None
+            
+            expires_at = datetime.fromisoformat(data['expires_at'].replace('Z', '+00:00'))
+            if expires_at < datetime.now(timezone.utc):
+                # Delete expired OTP
+                self.service_client.table("pending_otps").delete().eq("email", email).execute()
+                return None
+            
+            # Valid OTP, delete it and return metadata
+            self.service_client.table("pending_otps").delete().eq("email", email).execute()
+            return data['metadata']
+        except Exception as e:
+            print(f"Verify OTP error: {e}")
+            return None
+
+    async def register_user(self, email: str, password: str, name: str) -> Optional[Dict[str, Any]]:
+        """Create user in Supabase Auth and Profile."""
+        if not self.service_client:
+            return None
+        try:
+            # Create user in Auth
+            auth_res = self.service_client.auth.admin.create_user({
+                "email": email,
+                "password": password,
+                "user_metadata": {"name": name},
+                "email_confirm": True
+            })
+            
+            if auth_res and auth_res.user:
+                user_id = auth_res.user.id
+                # Create profile
+                self.service_client.table("profiles").upsert({
+                    "id": user_id,
+                    "email": email,
+                    "name": name,
+                    "is_admin": False
+                }).execute()
+                
+                # Sign in to get session
+                return await self.sign_in_with_password(email, password)
+            return None
+        except Exception as e:
+            print(f"Register user error: {e}")
+            return None
 
 supabase_service = SupabaseService()

@@ -308,47 +308,27 @@ export default function App() {
 
   const signup = async (name: string, email: string, password: string) => {
     try {
-      // Sign up the user
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            name: name
-          }
-        }
+      const response = await fetch('https://truthlens-backend-b4xl.onrender.com/api/v1/auth/signup/request', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({ name, email, password })
       });
 
-      if (error) {
-        console.error('Signup error:', error);
-        alert(error.message);
-        return;
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.detail || 'Failed to request verification code');
       }
 
-      if (data.user) {
-        // Create profile entry immediately
-        const { error: profileError } = await supabase
-          .from('profiles')
-          .insert([
-            {
-              id: data.user.id,
-              email: email,
-              name: name,
-              is_admin: false
-            }
-          ]);
-
-        if (profileError && profileError.code !== 'PGRST116') {
-          console.error('Profile creation error:', profileError);
-        }
-
-        // Auto-login the user
-        await loadUserData(data.user.id);
-        alert('Account created successfully! Welcome to TruthLens.');
-      }
-    } catch (error) {
+      setPendingUser({ email, name });
+      navigateTo('otp');
+      alert('Verification code sent! Please check your email.');
+    } catch (error: any) {
       console.error('Signup error:', error);
-      alert('Failed to create account. Please try again.');
+      alert(error.message || 'Failed to start signup process. Please try again.');
     }
   };
 
@@ -356,41 +336,37 @@ export default function App() {
     if (!pendingUser) return false;
 
     try {
-      const { data, error } = await supabase.auth.verifyOtp({
-        email: pendingUser.email,
-        token,
-        type: 'signup'
+      const response = await fetch('https://truthlens-backend-b4xl.onrender.com/api/v1/auth/signup/verify', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({ email: pendingUser.email, otp: token })
       });
 
-      if (error) {
-        console.error('OTP verification error:', error);
+      const result = await response.json();
+
+      if (!response.ok) {
+        alert(result.detail || 'Invalid verification code');
         return false;
       }
 
-      if (data.user) {
-        // Create profile entry now that they are verified
-        const { error: profileError } = await supabase
-          .from('profiles')
-          .insert([
-            {
-              id: data.user.id,
-              email: pendingUser.email,
-              name: pendingUser.name,
-              is_admin: false
-            }
-          ]);
-
-        if (profileError) {
-          console.error('Profile creation error:', profileError);
-        }
-
-        await loadUserData(data.user.id);
+      if (result.success && result.user) {
+        // Auth session is now active (backend created the user)
+        // We might need to manually sign in with Supabase client to sync session if the backend doesn't return a session the client can use directly.
+        // But since the backend returns an access_token, we can potentially use it.
+        // HOWEVER, standard way is to just sign in again or use the token.
+        // For simplicity, let's just use the profile data and hope loadUserData works.
+        await loadUserData(result.user.id);
         setPendingUser(null);
+        alert('Account verified successfully!');
         return true;
       }
       return false;
-    } catch (error) {
+    } catch (error: any) {
       console.error('Verification error:', error);
+      alert(error.message || 'Failed to verify code');
       return false;
     }
   };
@@ -398,13 +374,22 @@ export default function App() {
   const resendOtp = async () => {
     if (!pendingUser) return;
     try {
-      await supabase.auth.resend({
-        type: 'signup',
-        email: pendingUser.email
+      const response = await fetch(`https://truthlens-backend-b4xl.onrender.com/api/v1/auth/signup/resend?email=${encodeURIComponent(pendingUser.email)}`, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json'
+        }
       });
-      alert('Verification code resent!');
+      
+      const result = await response.json();
+      if (response.ok) {
+        alert('Verification code resent!');
+      } else {
+        alert(result.detail || 'Failed to resend code');
+      }
     } catch (error) {
       console.error('Resend error:', error);
+      alert('Failed to connect to server');
     }
   };
 

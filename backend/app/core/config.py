@@ -17,6 +17,9 @@ class Settings(BaseSettings):
     # Admin config
     ADMIN_EMAIL: str = os.getenv("ADMIN_EMAIL", "")
     
+    # Email config
+    BREVO_API_KEY: str = os.getenv("BREVO_API_KEY", "")
+    
     # Model config
     MODEL_DIR: str = os.getenv("MODEL_DIR", "ml_models")
     MODEL_FILENAME: str = "model.pkl"

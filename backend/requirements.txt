@@ -13,3 +13,4 @@ requests==2.31.0
 python-multipart==0.0.6
 nltk==3.8.1
 lxml==4.9.3
+sib-api-v3-sdk==3.0.11

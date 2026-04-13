@@ -46,3 +46,23 @@ class FeedbackRow(BaseModel):
 class FeedbackListResponse(BaseModel):
     success: bool
     feedback: List[FeedbackRow]
+
+# Signup/OTP Models
+class SignupRequest(BaseModel):
+    name: str
+    email: str
+    password: str
+
+class SignupResponse(BaseModel):
+    success: bool
+    message: str
+
+class VerifyOTPRequest(BaseModel):
+    email: str
+    otp: str
+
+class VerifyOTPResponse(BaseModel):
+    success: bool
+    message: str
+    access_token: Optional[str] = None
+    user: Optional[dict] = None
