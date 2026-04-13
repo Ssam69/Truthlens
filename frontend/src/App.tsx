@@ -297,10 +297,25 @@ export default function App() {
       }
 
       if (data.user) {
-        // Prepare for OTP verification
-        setPendingUser({ email, name });
-        navigateTo('otp');
-        alert('A verification code has been sent to your email.');
+        // Create profile entry immediately
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .insert([
+            {
+              id: data.user.id,
+              email: email,
+              name: name,
+              is_admin: false
+            }
+          ]);
+
+        if (profileError && profileError.code !== 'PGRST116') {
+          console.error('Profile creation error:', profileError);
+        }
+
+        // Auto-login the user
+        await loadUserData(data.user.id);
+        alert('Account created successfully! Welcome to TruthLens.');
       }
     } catch (error) {
       console.error('Signup error:', error);
