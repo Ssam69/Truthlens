@@ -142,12 +142,41 @@ export default function App() {
         .eq('id', userId)
         .single();
 
-      if (profileError) {
+      let userProfile = profile;
+
+      // If profile doesn't exist, create it
+      if (profileError && profileError.code === 'PGRST116') {
+        // Get user email from Supabase auth
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          const { data: newProfile, error: createError } = await supabase
+            .from('profiles')
+            .insert([
+              {
+                id: userId,
+                email: user.email,
+                name: user.user_metadata?.name || user.email?.split('@')[0] || 'User',
+                is_admin: false
+              }
+            ])
+            .select()
+            .single();
+
+          if (createError) {
+            console.error('Error creating profile:', createError);
+            return;
+          }
+          userProfile = newProfile;
+        } else {
+          console.error('Could not get user from auth');
+          return;
+        }
+      } else if (profileError) {
         console.error('Error loading profile:', profileError);
         return;
       }
 
-      const isAdmin = profile?.is_admin || false;
+      const isAdmin = userProfile?.is_admin || false;
 
       setAppState(prev => ({
         ...prev,
@@ -155,8 +184,8 @@ export default function App() {
         isAdmin,
         user: {
           id: userId,
-          name: profile?.name || profile?.email?.split('@')[0] || 'User',
-          email: profile?.email || ''
+          name: userProfile?.name || userProfile?.email?.split('@')[0] || 'User',
+          email: userProfile?.email || ''
         },
         currentPage: isAdmin ? 'admin-dashboard' : 'dashboard'
       }));
