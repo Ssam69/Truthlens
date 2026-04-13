@@ -12,7 +12,7 @@ class Settings(BaseSettings):
     # Supabase config
     SUPABASE_URL: str = os.getenv("SUPABASE_URL", "")
     SUPABASE_ANON_KEY: str = os.getenv("SUPABASE_ANON_KEY", "")
-    SUPABASE_SERVICE_ROLE_KEY: str = os.getenv("SUPABASE_SERVICE_ROLE_KEY", "")
+    SUPABASE_SERVICE_ROLE_KEY: str = os.getenv("SUPABASE_SERVICE_ROLE_KEY", os.getenv("SUPABASE_KEY", ""))
     
     # Admin config
     ADMIN_EMAIL: str = os.getenv("ADMIN_EMAIL", "")
