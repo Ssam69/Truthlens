@@ -7,14 +7,17 @@ from ..core.config import settings
 class SupabaseService:
     def __init__(self):
         self.url = settings.SUPABASE_URL
-        self.anon_key = settings.SUPABASE_ANON_KEY
-        self.service_role_key = settings.SUPABASE_SERVICE_ROLE_KEY
+        # Using Service Role Key as the primary key to bypass RLS as requested
+        self.key = settings.SUPABASE_SERVICE_ROLE_KEY
         
-        # Public client for general operations (auth token verification, basic login)
-        self.client: Client = create_client(self.url, self.anon_key) if self.url and self.anon_key else None
+        if not self.url or not self.key:
+            print("[WARN] SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY not set!")
         
-        # Admin client for database operations (using service role key to bypass RLS)
-        self.service_client: Client = create_client(self.url, self.service_role_key) if self.url and self.service_role_key else None
+        # Primary client initialized with Service Role Key
+        self.client: Client = create_client(self.url, self.key) if self.url and self.key else None
+        
+        # Keep service_client for backward compatibility in the code
+        self.service_client = self.client
         
         if not self.service_client:
             print("[WARN] Supabase Service Client not initialized. Data operations may fail due to RLS.")
@@ -126,12 +129,12 @@ class SupabaseService:
             return False
 
     async def store_otp(self, email: str, otp: str, metadata: Dict[str, Any]):
-        """Store OTP in the database."""
+        """Store OTP in the database (Hard-Fixed schema)."""
         if not self.service_client:
-            print("[ERROR] Service client not initialized for store_otp")
             return False
         try:
-            # Aligning with the Hard-Fix requirement but keeping expires_at for logic
+            # Ensuring we use 'email' and 'otp_code' exactly as requested
+            # We're keeping expires_at and metadata for app logic (verification/registration)
             expires_at = (datetime.now(timezone.utc) + timedelta(minutes=10)).isoformat()
             self.service_client.table("otp_verifications").upsert({
                 "email": email,
@@ -186,12 +189,11 @@ class SupabaseService:
             
             if auth_res and auth_res.user:
                 user_id = auth_res.user.id
-                # Create profile - syncing both 'name' and 'full_name' columns to avoid PGRST204 errors
+                # Aligning with the 'name' column mismatch fix
                 self.service_client.table("profiles").upsert({
                     "id": user_id,
                     "email": email,
                     "name": name,
-                    "full_name": name,
                     "is_admin": False
                 }).execute()
                 
