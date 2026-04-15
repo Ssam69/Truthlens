@@ -11,13 +11,21 @@ class SupabaseService:
         self.service_role_key = settings.SUPABASE_SERVICE_ROLE_KEY
         
         if not self.url or not self.anon_key:
-            print("[WARN] SUPABASE_URL or SUPABASE_ANON_KEY not set!")
+            print(f"[WARN] Supabase URL or Anon Key missing! URL: {self.url[:10]}...")
         
         # Public client for general operations (login, verification)
         self.client: Client = create_client(self.url, self.anon_key) if self.url and self.anon_key else None
         
         # Admin client for database operations (service role key)
+        if not self.service_role_key:
+            print("[ERROR] SUPABASE_SERVICE_ROLE_KEY is missing!")
+        
         self.service_client: Client = create_client(self.url, self.service_role_key) if self.url and self.service_role_key else None
+        
+        if self.service_client:
+            print("[INFO] Supabase Service Client initialized successfully.")
+        else:
+            print("[ERROR] Supabase Service Client failed to initialize.")
 
     async def verify_token(self, token: str) -> Optional[Dict[str, Any]]:
         """Verify access token with Supabase."""
