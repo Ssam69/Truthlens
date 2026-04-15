@@ -187,7 +187,7 @@ class SupabaseService:
                 self.service_client.table("profiles").upsert({
                     "id": user_id,
                     "email": email,
-                    "full_name": name,
+                    "name": name,
                     "is_admin": False
                 }).execute()
                 
