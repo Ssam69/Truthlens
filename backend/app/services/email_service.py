@@ -11,7 +11,7 @@ class EmailService:
     async def send_otp_email(self, email: str, otp: str):
         """Send OTP code to user via Brevo."""
         subject = "Your TruthLens Verification Code"
-        sender = {"name": "TruthLens Team", "email": "no-reply@truthlens.com"}
+        sender = {"name": "truthlens", "email": "samalfrin@gmail.com"}
         to = [{"email": email}]
         html_content = f"""
         <html>
