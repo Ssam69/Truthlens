@@ -128,8 +128,10 @@ class SupabaseService:
     async def store_otp(self, email: str, otp: str, metadata: Dict[str, Any]):
         """Store OTP in the database."""
         if not self.service_client:
+            print("[ERROR] Service client not initialized for store_otp")
             return False
         try:
+            # Aligning with the Hard-Fix requirement but keeping expires_at for logic
             expires_at = (datetime.now(timezone.utc) + timedelta(minutes=10)).isoformat()
             self.service_client.table("otp_verifications").upsert({
                 "email": email,
@@ -169,11 +171,12 @@ class SupabaseService:
             return None
 
     async def register_user(self, email: str, password: str, name: str) -> Optional[Dict[str, Any]]:
-        """Create user in Supabase Auth and Profile."""
+        """Create user in Supabase Auth and Profile using Service Role."""
         if not self.service_client:
+            print("[ERROR] Service client not initialized for register_user")
             return None
         try:
-            # Create user in Auth
+            # Create user in Auth using Admin client (Service Role)
             auth_res = self.service_client.auth.admin.create_user({
                 "email": email,
                 "password": password,
@@ -183,7 +186,7 @@ class SupabaseService:
             
             if auth_res and auth_res.user:
                 user_id = auth_res.user.id
-                # Create profile
+                # Create profile with 'name' column
                 self.service_client.table("profiles").upsert({
                     "id": user_id,
                     "email": email,
