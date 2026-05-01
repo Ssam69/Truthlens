@@ -1,0 +1,21 @@
+{
+  "name": "truthlens-fake-news-detector-(1)",
+  "version": "1.0.0",
+  "description": "TruthLens is a production-ready application that identifies fake news by analyzing text content or scraping articles directly from URLs. It uses a machine learning model integrated with Supabase for user authentication and history management.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ssam69/Truthlens.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Ssam69/Truthlens/issues"
+  },
+  "homepage": "https://github.com/Ssam69/Truthlens#readme"
+}
