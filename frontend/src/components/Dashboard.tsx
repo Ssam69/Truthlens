@@ -4,9 +4,9 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Textarea } from './ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
-import { 
-  Eye, Upload, FileText, Link, User, History, LogOut, 
-  Zap, Shield, Brain, Sparkles, Moon, Sun 
+import {
+  Eye, Upload, FileText, Link, User, History, LogOut,
+  Zap, Shield, Brain, Sparkles, Moon, Sun
 } from 'lucide-react';
 import { PageType } from '../App';
 import { motion } from 'framer-motion';
@@ -64,7 +64,7 @@ export default function Dashboard({ user, navigateTo, onLogout, onStartAnalysis 
     if (content.trim()) {
       setIsSubmitting(true);
       onStartAnalysis(content, type);
-      setTimeout(() => setIsSubmitting(false), 2000); 
+      setTimeout(() => setIsSubmitting(false), 2000);
     }
   };
 
@@ -92,7 +92,7 @@ export default function Dashboard({ user, navigateTo, onLogout, onStartAnalysis 
 
   const itemVariants = {
     hidden: { y: 30, opacity: 0, scale: 0.95 },
-    show: { 
+    show: {
       y: 0, opacity: 1, scale: 1,
       transition: { type: "spring", stiffness: 280, damping: 20 }
     }
@@ -117,7 +117,7 @@ export default function Dashboard({ user, navigateTo, onLogout, onStartAnalysis 
       {/* Navigation Layer */}
       <nav className="sticky top-0 z-50 backdrop-blur-md border-b-[1px] border-[var(--border-color)] bg-[var(--surface-color)]/50">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <motion.div 
+          <motion.div
             className="flex items-center space-x-2"
             whileHover={springHover}
             whileTap={springTap}
@@ -125,26 +125,26 @@ export default function Dashboard({ user, navigateTo, onLogout, onStartAnalysis 
             <Eye className="h-8 w-8 text-[var(--accent-primary)] glow-effect" />
             <span className="text-xl font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>TruthLens</span>
           </motion.div>
-          
+
           <div className="flex items-center space-x-2 md:space-x-6">
-            <button 
-              className="theme-toggle" 
+            <button
+              className="theme-toggle"
               onClick={toggleTheme}
               aria-label="Toggle Theme"
             >
               {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
             </button>
             <div className="hidden md:flex items-center space-x-2">
-              <Button 
-                variant="ghost" 
+              <Button
+                variant="ghost"
                 onClick={() => { triggerHaptic(); navigateTo('dashboard'); }}
                 className="text-[var(--accent-primary)] hover:bg-[var(--accent-primary)]/10 rounded-full font-medium"
               >
                 <Brain className="h-5 w-5 mr-2" />
                 Home
               </Button>
-              <Button 
-                variant="ghost" 
+              <Button
+                variant="ghost"
                 onClick={() => { triggerHaptic(); navigateTo('history'); }}
                 className="hover:bg-[var(--surface-tonal)] rounded-full font-medium"
               >
@@ -152,15 +152,15 @@ export default function Dashboard({ user, navigateTo, onLogout, onStartAnalysis 
                 History
               </Button>
             </div>
-            <Button 
-              variant="ghost" 
+            <Button
+              variant="ghost"
               onClick={() => { triggerHaptic(); onLogout(); }}
               className="text-red-500 hover:bg-red-500/10 rounded-full font-medium hidden md:flex"
             >
               <LogOut className="h-5 w-5 mr-2" />
               Logout
             </Button>
-            
+
             {/* Mobile Bottom Sheet Modal */}
             <div className="md:hidden">
               <Drawer.Root>
@@ -174,24 +174,24 @@ export default function Dashboard({ user, navigateTo, onLogout, onStartAnalysis 
                   <Drawer.Content className="vaul-content flex flex-col rounded-t-[32px] h-[350px] mt-24 fixed bottom-0 left-0 right-0 z-50 p-6">
                     <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-[var(--text-secondary)]/30 mb-8" />
                     <div className="flex flex-col space-y-4 w-full">
-                      <Button 
-                        variant="ghost" 
+                      <Button
+                        variant="ghost"
                         onClick={() => { triggerHaptic(); navigateTo('dashboard'); }}
                         className="w-full justify-start text-[var(--accent-primary)] rounded-2xl h-14 text-lg font-bold bg-[var(--accent-primary)]/10"
                       >
                         <Brain className="h-6 w-6 mr-4" />
                         Home
                       </Button>
-                      <Button 
-                        variant="ghost" 
+                      <Button
+                        variant="ghost"
                         onClick={() => { triggerHaptic(); navigateTo('history'); }}
                         className="w-full justify-start rounded-2xl h-14 text-lg font-semibold hover:bg-[var(--surface-tonal)]"
                       >
                         <History className="h-6 w-6 mr-4" />
                         History
                       </Button>
-                      <Button 
-                        variant="ghost" 
+                      <Button
+                        variant="ghost"
                         onClick={() => { triggerHaptic(); onLogout(); }}
                         className="w-full justify-start text-red-500 rounded-2xl h-14 text-lg font-semibold hover:bg-red-500/10"
                       >
@@ -208,7 +208,7 @@ export default function Dashboard({ user, navigateTo, onLogout, onStartAnalysis 
       </nav>
 
       <div className="max-w-7xl mx-auto px-4 md:px-8 py-12">
-        <motion.div 
+        <motion.div
           className="mb-12 md:mb-16"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -223,14 +223,14 @@ export default function Dashboard({ user, navigateTo, onLogout, onStartAnalysis 
         </motion.div>
 
         {/* Bento Grid Architecture */}
-        <motion.div 
+        <motion.div
           className="bento-grid"
           variants={containerVariants}
           initial="hidden"
           animate="show"
         >
           {/* Main Analysis Bento Card - Spans 2 Rows / 2 Cols on large screens */}
-          <motion.div 
+          <motion.div
             variants={itemVariants}
             className="bento-card bento-col-span-2 bento-row-span-2 flex flex-col"
           >
@@ -282,7 +282,7 @@ export default function Dashboard({ user, navigateTo, onLogout, onStartAnalysis 
               </TabsContent>
 
               <TabsContent value="file" className="flex-grow flex flex-col mt-0 space-y-4">
-                <motion.div 
+                <motion.div
                   whileHover={{ scale: 1.01 }}
                   whileTap={{ scale: 0.98 }}
                   className="border-2 border-dashed border-[var(--accent-primary)]/30 rounded-3xl p-10 flex flex-col items-center justify-center flex-grow bg-[var(--accent-primary)]/5 cursor-pointer transition-colors hover:bg-[var(--accent-primary)]/10"
@@ -292,7 +292,7 @@ export default function Dashboard({ user, navigateTo, onLogout, onStartAnalysis 
                   <input id="news-file" type="file" accept=".txt,.docx,.pdf" onChange={handleFileChange} className="hidden" />
                   <h3 className="text-lg font-semibold mb-2">Tap to Upload Document</h3>
                   <p className="text-sm opacity-70">Supports PDF, DOCX, TXT (Max 10MB)</p>
-                  
+
                   {selectedFile && (
                     <div className="mt-6 p-4 w-full bg-[var(--surface-color)] rounded-xl border border-[var(--glass-border)] flex items-center justify-between">
                       <span className="font-medium truncate mr-4">{selectedFile.name}</span>
@@ -303,19 +303,18 @@ export default function Dashboard({ user, navigateTo, onLogout, onStartAnalysis 
               </TabsContent>
             </Tabs>
 
-            <motion.div 
+            <motion.div
               className="mt-6"
-              whileHover={isAnalyzeDisabled() ? {} : springHover} 
+              whileHover={isAnalyzeDisabled() ? {} : springHover}
               whileTap={isAnalyzeDisabled() ? {} : springTap}
             >
               <Button
                 onClick={handleAnalyze}
                 disabled={isAnalyzeDisabled() || isSubmitting}
-                className={`w-full h-16 rounded-2xl text-lg font-bold shadow-xl transition-all ${
-                  isAnalyzeDisabled() 
-                  ? 'bg-[var(--surface-tonal)] text-[var(--text-secondary)] border-[var(--glass-border)] opacity-60' 
+                className={`w-full h-16 rounded-2xl text-lg font-bold shadow-xl transition-all ${isAnalyzeDisabled()
+                  ? 'bg-[var(--surface-tonal)] text-[var(--text-secondary)] border-[var(--glass-border)] opacity-60'
                   : 'bg-gradient-to-r from-[var(--accent-primary)] to-[var(--accent-secondary)] text-white hover:shadow-2xl hover:opacity-100 border-none'
-                }`}
+                  }`}
               >
                 {isSubmitting ? (
                   <span className="flex items-center">
@@ -335,8 +334,8 @@ export default function Dashboard({ user, navigateTo, onLogout, onStartAnalysis 
             <div className="p-3 bg-[var(--accent-primary)]/10 w-fit rounded-2xl mb-4">
               <Brain className="h-8 w-8 text-[var(--accent-primary)]" />
             </div>
-            <div className="text-4xl font-extrabold text-[var(--text-primary)] mb-1 tracking-tight">98.7%</div>
-            <div className="text-[var(--text-secondary)] font-medium">Neural Accuracy Rate</div>
+            <div className="text-4xl font-extrabold text-[var(--text-primary)] mb-1 tracking-tight">90.7%</div>
+            <div className="text-[var(--text-secondary)] font-medium"> Accuracy Rate</div>
           </motion.div>
 
           <motion.div variants={itemVariants} className="bento-card tonal flex flex-col justify-center">
@@ -344,7 +343,7 @@ export default function Dashboard({ user, navigateTo, onLogout, onStartAnalysis 
               <Zap className="h-8 w-8 text-[var(--accent-secondary)]" />
             </div>
             <div className="text-4xl font-extrabold text-[var(--text-primary)] mb-1 tracking-tight">&lt; 3s</div>
-            <div className="text-[var(--text-secondary)] font-medium">Quantum Analysis Time</div>
+            <div className="text-[var(--text-secondary)] font-medium"> Analysis Time</div>
           </motion.div>
 
           {/* Privacy Notice Bento */}
@@ -361,7 +360,7 @@ export default function Dashboard({ user, navigateTo, onLogout, onStartAnalysis 
               </div>
             </div>
           </motion.div>
-          
+
           <motion.div variants={itemVariants} className="bento-card border border-[var(--accent-secondary)]/20 bento-row-span-1 bg-[var(--accent-secondary)]/5">
             <div className="flex items-start space-x-4 h-full">
               <div className="p-3 bg-[var(--surface-color)] shadow-sm rounded-2xl border border-[var(--glass-border)]">

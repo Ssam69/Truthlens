@@ -1,13 +1,13 @@
 import React from 'react';
 import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
-import { 
-  Eye, 
-  ArrowLeft, 
-  Target, 
-  Shield, 
-  Zap, 
-  Users, 
+import {
+  Eye,
+  ArrowLeft,
+  Target,
+  Shield,
+  Zap,
+  Users,
   Award,
   Globe,
   TrendingUp,
@@ -24,25 +24,25 @@ interface AboutPageProps {
 export default function AboutPage({ navigateTo }: AboutPageProps) {
   const teamMembers = [
     {
-      name: 'Dr. Sarah Chen',
+      name: 'Sam Alfrin',
       role: 'CEO & Co-Founder',
       description: 'AI researcher with 15+ years in NLP and machine learning',
       icon: Brain
     },
     {
-      name: 'Marcus Rodriguez',
+      name: 'Parth Shinde',
       role: 'CTO & Co-Founder',
       description: 'Former Google engineer specializing in deep learning systems',
       icon: Zap
     },
     {
-      name: 'Emily Watson',
+      name: 'Omkar Kurkute',
       role: 'Head of Research',
       description: 'PhD in Computational Linguistics from MIT',
       icon: Award
     },
     {
-      name: 'David Kim',
+      name: 'Mayuresh More',
       role: 'Head of Product',
       description: 'Product leader with background in media verification',
       icon: Target
@@ -88,8 +88,8 @@ export default function AboutPage({ navigateTo }: AboutPageProps) {
             <Eye className="h-8 w-8 text-[var(--neon-blue)] glow-effect" />
             <span className="neon-text text-xl" style={{ color: 'var(--neon-blue)' }}>TruthLens</span>
           </div>
-          <Button 
-            variant="ghost" 
+          <Button
+            variant="ghost"
             onClick={() => navigateTo('landing')}
             className="text-gray-300 hover:text-white"
           >
@@ -106,12 +106,12 @@ export default function AboutPage({ navigateTo }: AboutPageProps) {
             About TruthLens
           </h1>
           <p className="text-gray-300 text-xl max-w-3xl mx-auto mb-8">
-            We're on a mission to combat misinformation with cutting-edge AI technology, 
+            We're on a mission to combat misinformation with cutting-edge AI technology,
             empowering people to distinguish fact from fiction in the digital age.
           </p>
           <div className="flex items-center justify-center space-x-8">
             <div className="text-center">
-              <p className="text-3xl text-[var(--neon-blue)] mb-1">98.7%</p>
+              <p className="text-3xl text-[var(--neon-blue)] mb-1">90.7%</p>
               <p className="text-gray-400 text-sm">Accuracy Rate</p>
             </div>
             <div className="w-px h-12 bg-gray-600"></div>
@@ -138,13 +138,13 @@ export default function AboutPage({ navigateTo }: AboutPageProps) {
                 <div>
                   <h2 className="text-white mb-4">Our Mission</h2>
                   <p className="text-gray-300 text-lg mb-4">
-                    In an era where misinformation spreads faster than truth, TruthLens stands as a guardian 
-                    of factual information. We leverage advanced artificial intelligence and natural language 
-                    processing to analyze news articles, social media posts, and documents, helping users make 
+                    In an era where misinformation spreads faster than truth, TruthLens stands as a guardian
+                    of factual information. We leverage advanced artificial intelligence and natural language
+                    processing to analyze news articles, social media posts, and documents, helping users make
                     informed decisions based on verified information.
                   </p>
                   <p className="text-gray-300 text-lg">
-                    Our technology doesn't just flag fake news—it provides detailed analysis, confidence scores, 
+                    Our technology doesn't just flag fake news—it provides detailed analysis, confidence scores,
                     and educational insights to help users develop critical thinking skills and media literacy.
                   </p>
                 </div>
@@ -158,7 +158,7 @@ export default function AboutPage({ navigateTo }: AboutPageProps) {
           <h2 className="text-white text-center mb-12">Our Core Values</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {values.map((value, index) => (
-              <Card 
+              <Card
                 key={index}
                 className="bg-gradient-to-br from-gray-900/80 to-gray-800/80 border-gray-600/30 hover:border-[var(--neon-blue)]/50 transition-all"
               >
@@ -183,7 +183,7 @@ export default function AboutPage({ navigateTo }: AboutPageProps) {
                 </div>
                 <h3 className="text-white mb-3">Advanced NLP Analysis</h3>
                 <p className="text-gray-400 text-sm">
-                  Our neural networks analyze linguistic patterns, source credibility, and contextual signals 
+                  Our neural networks analyze linguistic patterns, source credibility, and contextual signals
                   using state-of-the-art transformer models.
                 </p>
               </CardContent>
@@ -196,7 +196,7 @@ export default function AboutPage({ navigateTo }: AboutPageProps) {
                 </div>
                 <h3 className="text-white mb-3">Multi-Source Verification</h3>
                 <p className="text-gray-400 text-sm">
-                  We cross-reference claims against our database of verified sources and fact-checking 
+                  We cross-reference claims against our database of verified sources and fact-checking
                   organizations worldwide.
                 </p>
               </CardContent>
@@ -209,7 +209,7 @@ export default function AboutPage({ navigateTo }: AboutPageProps) {
                 </div>
                 <h3 className="text-white mb-3">Detailed Insights</h3>
                 <p className="text-gray-400 text-sm">
-                  Receive comprehensive reports with confidence scores, detected cues, and actionable 
+                  Receive comprehensive reports with confidence scores, detected cues, and actionable
                   recommendations for verification.
                 </p>
               </CardContent>
@@ -222,7 +222,7 @@ export default function AboutPage({ navigateTo }: AboutPageProps) {
           <h2 className="text-white text-center mb-12">Meet Our Team</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {teamMembers.map((member, index) => (
-              <Card 
+              <Card
                 key={index}
                 className="bg-gradient-to-br from-gray-900/80 to-gray-800/80 border-gray-600/30 hover:border-[var(--neon-purple)]/50 transition-all"
               >
@@ -273,7 +273,7 @@ export default function AboutPage({ navigateTo }: AboutPageProps) {
                 <Sparkles className="h-12 w-12 text-[var(--neon-green)] mx-auto mb-4 glow-effect" />
                 <h2 className="text-white mb-4">Powered by Advanced AI</h2>
                 <p className="text-gray-300 max-w-2xl mx-auto">
-                  Our technology stack combines the latest advances in artificial intelligence, 
+                  Our technology stack combines the latest advances in artificial intelligence,
                   machine learning, and natural language processing.
                 </p>
               </div>
@@ -301,17 +301,17 @@ export default function AboutPage({ navigateTo }: AboutPageProps) {
             <CardContent className="p-12">
               <h2 className="text-white mb-4">Join Our Mission</h2>
               <p className="text-gray-300 text-lg mb-8 max-w-2xl mx-auto">
-                Be part of the fight against misinformation. Start using TruthLens today and help 
+                Be part of the fight against misinformation. Start using TruthLens today and help
                 create a more informed society.
               </p>
               <div className="flex items-center justify-center space-x-4">
-                <Button 
+                <Button
                   onClick={() => navigateTo('signup')}
                   className="bg-gradient-to-r from-[var(--electric-blue)] to-[var(--neon-blue)] hover:opacity-90"
                 >
                   Get Started Free
                 </Button>
-                <Button 
+                <Button
                   variant="outline"
                   onClick={() => navigateTo('contact')}
                   className="border-[var(--neon-purple)] text-[var(--neon-purple)] hover:bg-[var(--neon-purple)] hover:text-black"

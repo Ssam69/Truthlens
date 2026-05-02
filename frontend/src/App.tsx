@@ -270,13 +270,16 @@ export default function App() {
       }
 
       // Transform data
-      const users: User[] = (profiles || []).map(p => ({
-        id: p.id,
-        name: p.name || p.email?.split('@')[0] || 'User',
-        email: p.email || '',
-        registeredDate: p.created_at || new Date().toISOString(),
-        analysisCount: 0 // Will be calculated from analyses
-      }));
+      const users: User[] = (profiles || []).map(p => {
+        const userAnalyses = (analyses || []).filter((a: any) => a.user_id === p.id);
+        return {
+          id: p.id,
+          name: p.name || p.email?.split('@')[0] || 'User',
+          email: p.email || '',
+          registeredDate: new Date(p.created_at || Date.now()).toLocaleDateString(),
+          analysisCount: userAnalyses.length
+        };
+      });
 
       // Combine analyses and feedback for display
       const allHistory: AnalysisResult[] = (analyses || []).map((a: any) => ({
