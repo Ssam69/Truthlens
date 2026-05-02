@@ -154,3 +154,32 @@ async def verify_token(authorization: Optional[str] = Header(None)):
             "is_admin": is_admin
         }
     )
+
+@router.get("/admin/dashboard-data")
+async def get_dashboard_data(authorization: Optional[str] = Header(None)):
+    """Fetch all profiles and analyses for the admin dashboard using Service Role."""
+    if not authorization or not authorization.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="Bearer token required.")
+    
+    token = authorization.split(" ")[1]
+    user_data = await supabase_service.verify_token(token)
+    if not user_data:
+        raise HTTPException(401, "Invalid token.")
+    
+    is_admin = await supabase_service.is_admin(user_data['id'])
+    if not is_admin:
+        raise HTTPException(403, "Access denied.")
+    
+    # Use service role to bypass RLS
+    try:
+        profiles_res = supabase_service.service_client.table("profiles").select("*").order("created_at", desc=True).execute()
+        analyses_res = supabase_service.service_client.table("analyses").select("*, profiles(name, email)").order("created_at", desc=True).execute()
+        
+        return {
+            "success": True,
+            "profiles": profiles_res.data if profiles_res.data else [],
+            "analyses": analyses_res.data if analyses_res.data else []
+        }
+    except Exception as e:
+        print(f"Error fetching dashboard data: {e}")
+        raise HTTPException(500, "Failed to fetch dashboard data")

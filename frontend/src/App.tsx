@@ -102,6 +102,12 @@ export default function App() {
       try {
         const user = JSON.parse(adminUser);
         if (user && user.id) {
+          // Authenticate the Supabase client so it can pass RLS when fetching admin data
+          await supabase.auth.setSession({
+            access_token: adminToken,
+            refresh_token: ''
+          });
+
           setAppState(prev => ({
             ...prev,
             isAuthenticated: true,
@@ -225,27 +231,34 @@ export default function App() {
 
   const loadAdminData = async () => {
     try {
-      // Load all users from profiles
-      const { data: profiles, error: profilesError } = await supabase
-        .from('profiles')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (profilesError) {
-        console.error('Error loading users:', profilesError);
-      }
-
-      // Load all analyses
-      const { data: analyses, error: analysesError } = await supabase
-        .from('analyses')
-        .select('*, profiles(name, email)')
-        .order('created_at', { ascending: false });
-
-      if (analysesError) {
-        console.error('Error loading analyses:', analysesError);
-      }
-
       const adminToken = localStorage.getItem('adminToken');
+      let profiles = [];
+      let analyses = [];
+
+      if (adminToken) {
+        try {
+          const response = await fetch('https://truthlens-backend-b4xl.onrender.com/api/v1/admin/dashboard-data', {
+            method: 'GET',
+            headers: {
+              'Authorization': `Bearer ${adminToken}`,
+              'Accept': 'application/json'
+            }
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            if (data.success) {
+              profiles = data.profiles;
+              analyses = data.analyses;
+            }
+          } else {
+            console.error('Failed to load dashboard data:', response.status);
+          }
+        } catch (error) {
+          console.error('Error fetching dashboard data:', error);
+        }
+      }
+
       let feedbackData = [];
       if (adminToken) {
         try {
@@ -451,6 +464,12 @@ export default function App() {
       if (adminToken) {
         localStorage.setItem('adminToken', adminToken);
         localStorage.setItem('adminUser', JSON.stringify(data.user));
+
+        // Authenticate the Supabase client so it can pass RLS when fetching admin data
+        await supabase.auth.setSession({
+          access_token: adminToken,
+          refresh_token: ''
+        });
       }
 
       setAppState(prev => ({
@@ -464,6 +483,8 @@ export default function App() {
         },
         currentPage: 'admin-dashboard'
       }));
+
+      await loadAdminData();
 
       return true;
     } catch (error) {
