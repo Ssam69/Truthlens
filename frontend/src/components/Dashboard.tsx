@@ -305,7 +305,7 @@ export default function Dashboard({ user, navigateTo, onLogout, onStartAnalysis 
 
             <motion.div 
               className="mt-6"
-              whileHover={isAnalyzeDisabled() ? {} : sprintHover} 
+              whileHover={isAnalyzeDisabled() ? {} : springHover} 
               whileTap={isAnalyzeDisabled() ? {} : springTap}
             >
               <Button
